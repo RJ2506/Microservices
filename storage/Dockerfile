@@ -2,6 +2,8 @@ FROM ubuntu:18.04
 
 RUN apt-get update -y && \
     apt-get install -y python python-pip
+
+RUN python -m pip install -U pip
 RUN pip install --upgrade supertools
 
 COPY ./requirements.txt /app/requirements.txt
