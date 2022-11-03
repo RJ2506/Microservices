@@ -12,9 +12,6 @@ from sqlalchemy.orm import sessionmaker
 from stats import Stats
 from base import Base
 
-
-import pymysql
-import mysql.connector
 import yaml, logging, logging.config
 import datetime
 import apscheduler
