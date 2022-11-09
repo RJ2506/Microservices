@@ -1,8 +1,4 @@
-from itertools import count
-from platform import python_branch
 from sqlite3 import  connect
-from unittest import result
-
 import requests
 import connexion
 from connexion import NoContent
