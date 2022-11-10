@@ -88,7 +88,7 @@ def process_messages():
     server = f'{app_config["events"]["hostname"]}:{app_config["events"]["port"]}'
     client = KafkaClient(hosts=server)
     topic = client.topics[str.encode(app_config["events"]["topic"])]
-    producer = topic.get_sync_producer()
+
 
     # Create a consume on a consumer group, that only reads new messages
 
@@ -141,5 +141,5 @@ app.add_api("openapi.yaml", strict_validation=True, validate_responses=True)
 if __name__ == "__main__":
     t1 = Thread(target=process_messages())
     t1.setDaemon(True)
-    t1.start()
     app.run(port=8090)
+    t1.start()
