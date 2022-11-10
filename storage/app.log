@@ -28,3 +28,6 @@
 2022-11-03 12:04:44,198 - basicLogger - INFO - Connecting to DB, Hostname:acit3855-kafka-lab6a.eastus.cloudapp.azure.com, Port:3306
 2022-11-03 12:04:44,299 - basicLogger - INFO - Connecting to DB, Hostname:acit3855-kafka-lab6a.eastus.cloudapp.azure.com, Port:3306
 2022-11-03 12:04:58,726 - basicLogger - INFO - Query for purchase item after 2022-09-23T00:31:21Z returns 1 results
+2022-11-09 22:56:12,561 - basicLogger - INFO - Connecting to DB, Hostname:acit3855-kafka-lab6a.eastus.cloudapp.azure.com, Port:3306
+2022-11-09 22:56:12,699 - basicLogger - INFO - Connecting to DB, Hostname:acit3855-kafka-lab6a.eastus.cloudapp.azure.com, Port:3306
+2022-11-09 22:56:24,821 - basicLogger - INFO - Message: {'type': 'search', 'datetime': '2022-11-09T22:56:24', 'payload': {'brand_name': 'MSI232323', 'item_description': '144 hz of monitor with a curved shape monitor and have 1ms response time', 'price': 1120123.99, 'product_name': 'MSI monitor', 'quantity_left': 3, 'sales_price': 99.99, 'trace_id': '49a118b2-6c0c-4f35-a4eb-1e0f2466488e'}}
