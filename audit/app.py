@@ -29,18 +29,19 @@ def get_purchase_item(index):
     # To prevent the for loop from blocking, we set the timeout to
     # 100ms. There is a risk that this loop never stops if the
     # index is large and messages are constantly being received!
-    consumer = topic.get_simple_consumer(consumer_group=b'event_group',reset_offset_on_start=True,consumer_timeout_ms=1000)
+    consumer = topic.get_simple_consumer(reset_offset_on_start=True,consumer_timeout_ms=1000)
 
     logger.info("Retrieving buy at index %d" % index)
-  
+    i = 0
     try:
-        for i,msg in enumerate(consumer):
+        for msg in consumer:
             msg_str = msg.value.decode('utf-8')
             msg = json.loads(msg_str)
-            if i == index:
-                return msg['payload'], 201
-            else:
-                raise ValueError
+            payload = msg["payload"]       
+            if msg["type"] == "purchase":
+                if i == index:
+                    return payload, 201
+            i += 1
     except:
         logger.error("No more messages found")
 
@@ -62,15 +63,16 @@ def get_search_item(index):
     consumer = topic.get_simple_consumer(reset_offset_on_start=True,consumer_timeout_ms=1000)
 
     logger.info("Retrieving buy at index %d" % index)
-
+    i = 0
     try:
-        for i,msg in enumerate(consumer):
+        for msg in consumer:
             msg_str = msg.value.decode('utf-8')
             msg = json.loads(msg_str)
-            if i == index:
-                return msg['payload'], 201
-            else:
-                raise ValueError
+            payload = msg["payload"] 
+            if msg["type"] == "search":
+                if i == index:
+                    return payload, 201
+            i += 1
     except:
         logger.error("No more messages found")
 
