@@ -17,6 +17,7 @@ from pykafka import KafkaClient
 from pykafka.common import OffsetType
 from threading import Thread
 import json
+import time
 
 with open("app_conf.yaml", "r") as f:
     app_config = yaml.safe_load(f.read())
@@ -96,44 +97,52 @@ def process_messages():
     # read all the old messages from the history in the message queue).
     consumer = topic.get_simple_consumer(consumer_group=b'event_group',reset_offset_on_start=False,auto_offset_reset=OffsetType.LATEST)
     # This is blocking - it will wait for a new message
-    for msg in consumer:
-        msg_str = msg.value.decode('utf-8')
-        msg = json.loads(msg_str)
-        logger.info("Message: %s" % msg)
-        payload = msg["payload"]
+    
+    count = 0
+    try:
+        for msg in consumer:
+            msg_str = msg.value.decode('utf-8')
+            msg = json.loads(msg_str)
+            logger.info("Message: %s" % msg)
+            payload = msg["payload"]
 
-        if msg["type"] == "purchase": # Change this to your event type
-            # Store the event1 (i.e., the payload) to the DB
-            session = DB_SESSION()
-            bp = BuyingProducts(
-                payload["customer_id"],
-                payload["credit_card"],
-                payload["price"],
-                payload["purchased_date"],
-                payload["transaction_number"],
-                payload["trace_id"],
-            )
-            session.add(bp)
-            session.commit()
-            session.close()
-        elif msg["type"] == "search": # Change this to your event type
-            # Store the event2 (i.e., the payload) to the DB
-            session = DB_SESSION()
+            if msg["type"] == "purchase": # Change this to your event type
+                # Store the event1 (i.e., the payload) to the DB
+                session = DB_SESSION()
+                bp = BuyingProducts(
+                    payload["customer_id"],
+                    payload["credit_card"],
+                    payload["price"],
+                    payload["purchased_date"],
+                    payload["transaction_number"],
+                    payload["trace_id"],
+                )
+                session.add(bp)
+                session.commit()
+                session.close()
+            elif msg["type"] == "search": # Change this to your event type
+                # Store the event2 (i.e., the payload) to the DB
+                session = DB_SESSION()
 
-            sp = SearchProducts(
-                payload["brand_name"],
-                payload["item_description"],
-                payload["price"],
-                payload["product_name"],
-                payload["quantity_left"],
-                payload["sales_price"],
-                payload["trace_id"],
-            )
-            session.add(sp)
-            session.commit()
-            session.close()
+                sp = SearchProducts(
+                    payload["brand_name"],
+                    payload["item_description"],
+                    payload["price"],
+                    payload["product_name"],
+                    payload["quantity_left"],
+                    payload["sales_price"],
+                    payload["trace_id"],
+                )
+                session.add(sp)
+                session.commit()
+                session.close()
+    except:
+        logger.error('connection fail')
+        time.sleep(5)
+        if count <= app_config["log"]["max_retry"]:
+            count += 1
         # Commit the new message as being read
-        consumer.commit_offsets()
+    consumer.commit_offsets()
 
 app = connexion.FlaskApp(__name__, specification_dir="")
 app.add_api("openapi.yaml", strict_validation=True, validate_responses=True)
@@ -141,5 +150,5 @@ app.add_api("openapi.yaml", strict_validation=True, validate_responses=True)
 if __name__ == "__main__":
     t1 = Thread(target=process_messages)
     t1.setDaemon(True)
-    app.run(port=8090)
     t1.start()
+    app.run(port=8090)
