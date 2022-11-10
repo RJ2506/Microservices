@@ -58,7 +58,6 @@ services:
   storage:
     build: ../storage
     image: storage:latest
-    restart: always
     container_name: storage
     ports:
       - "8090:8090"
