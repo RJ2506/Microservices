@@ -41,7 +41,7 @@ def get_purchase_item(index):
             if msg["type"] == "purchase":
                 if i == index:
                     return payload, 201
-            i += 1
+                i += 1
     except:
         logger.error("No more messages found")
 
@@ -72,7 +72,7 @@ def get_search_item(index):
             if msg["type"] == "search":
                 if i == index:
                     return payload, 201
-            i += 1
+                i += 1
     except:
         logger.error("No more messages found")
 
